@@ -1,0 +1,33 @@
+clear;
+close all;
+home = pwd;
+
+subject = "Dog_1";
+type = "interictal"; % choosse ictal or interictal
+numFilesToLoad = 5;
+
+cd ../Data/Dog_1;
+
+for k = 1:numFilesToLoad % Load file
+    file_name = subject + "_" + type + "_segment_" + k;
+    file = load(file_name + ".mat");
+
+    figure; % Create a new figure for each file
+    % Assuming the data contains a variable named 'data' to plot
+   
+    numColumns = size(file.data, 1); % Get the number of columns in the data
+    for col = 1:numColumns
+        hold on;
+   offset = 200*(col-1); % vertical offset to plot the data
+        timeScale = (0:size(file.data, 2)-1) / file.freq(); % Create a time scale based on the sampling frequency
+        plot(timeScale, file.data(col, :) + offset); % Plot the current column against the time scale
+    end
+    grid on;
+    
+    title(['Plot for: ', file_name], 'Interpreter','none'); % Title for the current plot
+    xlabel('Time'); % X-axis label
+    ylabel('Values'); % Y-axis label
+end
+
+
+cd ../../MATLAB_Scripts/; 
