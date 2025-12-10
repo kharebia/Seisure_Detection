@@ -2,32 +2,37 @@ clear;
 close all;
 home = pwd;
 
-subject = "Dog_1";
-type = "interictal"; % choosse ictal or 
-numFilesToLoad = 5;
+subject = "Dog_2";
+pics = 6; % number of pictures to generate
+%type = "interictal"; % choosse ictal or interictal
 
-cd ../Data/Dog_1;
+for type = ["interictal", "ictal"]
+    for s = 1:pics
+        cd ("../Data/" + subject);
+        data = zeros(256, 250);
+        for k = 1:10 % Load 10 files and combine them
 
-for k = 1:numFilesToLoad % Load file
-    file_name = subject + "_" + type + "_segment_" + k;
-    file = load(file_name + ".mat");
+            file_name = subject + "_" + type + "_segment_" + (k + s*10 - 10);
+            file = load(file_name + ".mat");
 
-    figure; % Create a new figure for each file
-    % Assuming the data contains a variable named 'data' to plot
-   
-    numColumns = size(file.data, 1); % Get the number of columns in the data
-    for col = 1:numColumns
-        hold on;
-   offset = 200*(col-1); % vertical offset to plot the data
-        timeScale = (0:size(file.data, 2)-1) / file.freq(); % Create a time scale based on the sampling frequency
-        plot(timeScale, file.data(col, :) + offset); % Plot the current column against the time scale
+            for row = 1:16
+                data((row*16-15):(row*16), (k*25 - 24):(k*25)) = file.data(:, (row*25 - 24):(row*25));
+            end
+
+        end
+        cd ../../MATLAB_Scripts/;
+
+        figure;
+        h = heatmap(data);
+        grid off;
+        ax = gca; % Get current axes
+        title('Heatmap of '+" "+ subject+" " + type + ' Data ' + s);
+
+        h.XDisplayLabels = repmat({''},1,size(h.ColorData,2));   % blank x labels
+        h.YDisplayLabels = repmat({''},1,size(h.ColorData,1));   % blank y labels
+
+        clim([-200 200]);
+        colormap('jet');
     end
-    grid on;
-    
-    title(['Plot for: ', file_name], 'Interpreter','none'); % Title for the current plot
-    xlabel('Time'); % X-axis label
-    ylabel('Values'); % Y-axis label
 end
 
-
-cd ../../MATLAB_Scripts/; 
