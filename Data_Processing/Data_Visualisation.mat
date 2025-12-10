@@ -3,7 +3,7 @@ close all;
 home = pwd;
 
 subject = "Dog_1";
-type = "interictal"; % choosse ictal or interictal
+type = "interictal"; % choosse ictal or 
 numFilesToLoad = 5;
 
 cd ../Data/Dog_1;
